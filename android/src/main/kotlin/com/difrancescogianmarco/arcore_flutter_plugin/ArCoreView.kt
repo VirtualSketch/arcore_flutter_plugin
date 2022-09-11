@@ -17,6 +17,7 @@ import com.difrancescogianmarco.arcore_flutter_plugin.flutter_models.FlutterArCo
 import com.difrancescogianmarco.arcore_flutter_plugin.flutter_models.FlutterArCorePose
 import com.difrancescogianmarco.arcore_flutter_plugin.models.RotatingNode
 import com.difrancescogianmarco.arcore_flutter_plugin.utils.ArCoreUtils
+import com.difrancescogianmarco.arcore_flutter_plugin.utils.ScreenshotsUtils
 import com.google.ar.core.*
 import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.UnavailableException
@@ -175,6 +176,10 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             "init" -> {
                 arScenViewInit(call, result, activity)
             }
+            "takeScreenshot" -> {
+                debugLog(" Take screenshot...")
+                ScreenshotsUtils.onGetSnapshot(arSceneView,result,activity)
+            }
             "addArCoreNode" -> {
                 debugLog(" addArCoreNode")
                 val map = call.arguments as HashMap<String, Any>
@@ -206,9 +211,9 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 updateMaterials(call, result)
 
             }
-            "takeScreenshot" -> {
-                debugLog("takeScreenshot")
-                takeScreenshot()
+            "takeScreenshotBytes" -> {
+                debugLog("takeScreenshotBytes")
+                takeScreenshotBytes()
 
             }
             "loadMesh" -> {
@@ -360,7 +365,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     //     result.success(null)
     // }
 
-    private fun takeScreenshot(): String? {
+    private fun takeScreenshotBytes(): String? {
         try {
             val bitmap: Bitmap = Bitmap.createBitmap(arSceneView!!.getWidth(), arSceneView!!.getHeight(),
                     Bitmap.Config.ARGB_8888)

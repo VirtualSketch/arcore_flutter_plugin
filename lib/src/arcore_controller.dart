@@ -247,8 +247,8 @@ class ArCoreController {
     return _channel.invokeMethod('getView');
   }
 
-  Future<dynamic> takeScreenshot() {
-    return _channel.invokeMethod('takeScreenshot');
+  Future<dynamic> takeScreenshotBytes() {
+    return _channel.invokeMethod('takeScreenshotBytes');
   }
 
   void dispose() {
@@ -267,5 +267,12 @@ class ArCoreController {
     } catch (ex) {
       print(ex);
     }
+  }
+
+  Future<String> snapshot() async {
+
+    final String path = await _channel.invokeMethod('takeScreenshot');
+
+    return path;
   }
 }
