@@ -142,7 +142,7 @@ class ArCoreAugmentedImagesView(activity: Activity, context: Context, messenger:
                 }
                 "takeScreenshot" -> {
                     debugLog(" Take screenshot...")
-                    ScreenshotsUtils.onGetSnapshot(arSceneView,result,activity)
+                    ScreenshotsUtils.onGetSnapshot(arSceneView,result)
                 }
                 "load_single_image_on_db" -> {
                     debugLog( "load_single_image_on_db")

@@ -73,7 +73,7 @@ class ScreenshotsUtils {
 
                         var imageBytes: ByteArray = getByteArrayFromImage(bitmapImage);
 
-                        Log.i("Sreenshot", "Saved on path: ${pathSaved}");
+                        Log.i("Sreenshot", "Saved on path: ${imageBytes}");
                         result.success(imageBytes);
 
                       }else{
