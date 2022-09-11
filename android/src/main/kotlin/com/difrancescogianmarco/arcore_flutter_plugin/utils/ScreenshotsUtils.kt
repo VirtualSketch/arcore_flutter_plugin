@@ -31,7 +31,7 @@ class ScreenshotsUtils {
         }
 
 
-        fun saveBitmap(bitmap: Bitmap,activity: Activity): String {
+        fun saveBitmap(bitmap: Bitmap,activity: Activity): Bitmap {
 
 
             val externalDir = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -52,29 +52,34 @@ class ScreenshotsUtils {
 
             try{
 
-                val file = File(dirPath)
+                // val file = File(dirPath)
 
                 // Get the file output stream
-                val stream: OutputStream = FileOutputStream(file)
+                // val stream: OutputStream = FileOutputStream(file)
+
+                val stream = ByteArrayOutputStream()
 
                 // Compress bitmap
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
 
+                val byteArray = stream.toByteArray()
+
                 // Flush the stream
-                stream.flush()
+                // stream.flush()
 
                 // Close stream
-                stream.close()
-
+                // stream.close()
 
            }catch (e: Exception){
                 e.printStackTrace()
             }
 
 
-            return dirPath;
+            // return dirPath;
 
-
+                return BitmapFactory.decodeByteArray(
+                    byteArray, 0, byteArray.size
+                )
 
         }
 
@@ -138,7 +143,7 @@ class ScreenshotsUtils {
                       if (copyResult == PixelCopy.SUCCESS) {
                         Log.i("Sreenshot", "PixelCopy request SUCESS. ${copyResult}");
 
-                        var pathSaved: String = saveBitmap(bitmapImage,activity);
+                        var pathSaved: Bitmap = saveBitmap(bitmapImage,activity);
 
                         Log.i("Sreenshot", "Saved on path: ${pathSaved}");
                         result.success(pathSaved);
