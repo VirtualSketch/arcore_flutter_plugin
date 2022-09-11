@@ -271,8 +271,12 @@ class ArCoreController {
 
   Future<String> snapshot() async {
 
-    final String path = await _channel.invokeMethod('takeScreenshot');
+    final String? path = await _channel.invokeMethod('takeScreenshot');
 
-    return path;
+    if (path != null) {
+      return path;
+    }
+
+    throw Error();
   }
 }
