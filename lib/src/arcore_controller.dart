@@ -269,9 +269,9 @@ class ArCoreController {
     }
   }
 
-  Future<String> snapshot() async {
+  Future<dynamic> snapshot() async {
 
-    final String? path = await _channel.invokeMethod('takeScreenshot');
+    final dynamic path = await _channel.invokeMethod('takeScreenshot');
 
     if (path != null) {
       return path;
