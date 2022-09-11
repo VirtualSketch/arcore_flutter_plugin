@@ -16,6 +16,9 @@ import android.Manifest;
 import android.graphics.Bitmap
 import android.app.Activity
 import android.util.Log
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import java.io.ByteArrayOutputStream
 import io.flutter.plugin.common.MethodChannel
 import com.google.ar.sceneform.ArSceneView
 
@@ -23,102 +26,27 @@ class ScreenshotsUtils {
 
     companion object {
 
-        fun getPictureName(): String {
+        fun getByteArrayFromImage(bitmap: Bitmap): ByteArray {
 
-            var sDate: String = SimpleDateFormat("yyyyMMddHHmmss").format(Date());
-
-            return "MyApp-" + sDate + ".png";
-        }
-
-
-        fun saveBitmap(bitmap: Bitmap,activity: Activity): Bitmap {
-
-
-            val externalDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-
-            val sDir = externalDir + File.separator + "MyApp";
-
-            val dir = File(sDir);
-
-            val dirPath: String;
-
-            if( dir.exists() || dir.mkdir()) {
-                dirPath = sDir + File.separator + getPictureName();
-            } else {
-                dirPath = externalDir + File.separator + getPictureName();
-            }
-
-
+            var byteArray = ByteArrayOutputStream().toByteArray();
 
             try{
-
-                // val file = File(dirPath)
-
-                // Get the file output stream
-                // val stream: OutputStream = FileOutputStream(file)
-
                 val stream = ByteArrayOutputStream()
 
                 // Compress bitmap
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, stream)
 
-                val byteArray = stream.toByteArray()
-
-                // Flush the stream
-                // stream.flush()
-
-                // Close stream
-                // stream.close()
+                byteArray = stream.toByteArray()
 
            }catch (e: Exception){
                 e.printStackTrace()
             }
 
-
-            // return dirPath;
-
-                return BitmapFactory.decodeByteArray(
-                    byteArray, 0, byteArray.size
-                )
+            return byteArray
 
         }
 
-        fun permissionToWrite(activity: Activity): Boolean {
-
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                Log.i("Sreenshot", "Permission to write false due to version codes.");
-
-                return false;
-            }
-
-            var perm = activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-            if(perm == PackageManager.PERMISSION_GRANTED) {
-                Log.i("Sreenshot", "Permission to write granted!");
-
-                return true;
-            }
-
-            Log.i("Sreenshot","Requesting permissions...");
-            activity.requestPermissions(
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                11
-            );
-            Log.i("Sreenshot", "No permissions :(");
-
-            return false;
-        } 
-
-
-        fun onGetSnapshot(arSceneView: ArSceneView?, result: MethodChannel.Result,activity: Activity){
-
-            if( !permissionToWrite(activity) ) {
-                Log.i("Sreenshot", "Permission to write files missing!");
-
-                result.success(null);
-
-                return;
-            }
+        fun onGetSnapshot(arSceneView: ArSceneView?, result: MethodChannel.Result){
 
             if(arSceneView == null){
                 Log.i("Sreenshot", "Ar Scene View is NULL!");
@@ -143,10 +71,10 @@ class ScreenshotsUtils {
                       if (copyResult == PixelCopy.SUCCESS) {
                         Log.i("Sreenshot", "PixelCopy request SUCESS. ${copyResult}");
 
-                        var pathSaved: Bitmap = saveBitmap(bitmapImage,activity);
+                        var imageBytes: ByteArray = getByteArrayFromImage(bitmapImage);
 
                         Log.i("Sreenshot", "Saved on path: ${pathSaved}");
-                        result.success(pathSaved);
+                        result.success(imageBytes);
 
                       }else{
                           Log.i("Sreenshot", "PixelCopy request failed. ${copyResult}");

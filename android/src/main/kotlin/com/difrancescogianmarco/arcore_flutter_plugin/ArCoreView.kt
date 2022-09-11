@@ -178,7 +178,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             }
             "takeScreenshot" -> {
                 debugLog(" Take screenshot...")
-                ScreenshotsUtils.onGetSnapshot(arSceneView,result,activity)
+                ScreenshotsUtils.onGetSnapshot(arSceneView,result)
             }
             "addArCoreNode" -> {
                 debugLog(" addArCoreNode")
@@ -211,23 +211,10 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 updateMaterials(call, result)
 
             }
-            "takeScreenshotBytes" -> {
-                debugLog("takeScreenshotBytes")
-                takeScreenshotBytes()
-
-            }
             "loadMesh" -> {
                 val map = call.arguments as HashMap<String, Any>
                 val textureBytes = map["textureBytes"] as ByteArray
                 loadMesh(textureBytes)
-            }
-            "log" -> {
-                debugLog("Get logs")
-                log(result)
-            }
-            "getView" -> {
-                debugLog("Get ARcore View")
-                getView()
             }
             "dispose" -> {
                 debugLog("Disposing ARCore now")
@@ -252,25 +239,6 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
             }
         }
     }
-
-/*    fun maybeEnableArButton() {
-        Log.i(TAG,"maybeEnableArButton" )
-        try{
-            val availability = ArCoreApk.getInstance().checkAvailability(activity.applicationContext)
-            if (availability.isTransient) {
-                // Re-query at 5Hz while compatibility is checked in the background.
-                Handler().postDelayed({ maybeEnableArButton() }, 200)
-            }
-            if (availability.isSupported) {
-                debugLog("AR SUPPORTED")
-            } else { // Unsupported or unknown.
-                debugLog("AR NOT SUPPORTED")
-            }
-        }catch (ex:Exception){
-            Log.i(TAG,"maybeEnableArButton ${ex.localizedMessage}" )
-        }
-
-    }*/
 
     private fun setupLifeCycle(context: Context) {
         activityLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
@@ -332,83 +300,6 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
                 methodChannel.invokeMethod("onPlaneTap", list)
             }
         }
-    }
-
-    // private fun takeScreenshot(call: MethodCall, result: MethodChannel.Result) {
-    //     try {
-    //         // create bitmap screen capture
-
-    //         // Create a bitmap the size of the scene view.
-    //         val bitmap: Bitmap = Bitmap.createBitmap(arSceneView!!.getWidth(), arSceneView!!.getHeight(),
-    //                 Bitmap.Config.ARGB_8888)
-
-    //         // Create a handler thread to offload the processing of the image.
-    //         val handlerThread = HandlerThread("PixelCopier")
-    //         handlerThread.start()
-    //         // Make the request to copy.
-    //         // Make the request to copy.
-    //         PixelCopy.request(arSceneView!!, bitmap, { copyResult ->
-    //             if (copyResult === PixelCopy.SUCCESS) {
-    //                 try {
-    //                     saveBitmapToDisk(bitmap)
-    //                 } catch (e: IOException) {
-    //                     e.printStackTrace();
-    //                 }
-    //             }
-    //             handlerThread.quitSafely()
-    //         }, Handler(handlerThread.getLooper()))
-
-    //     } catch (e: Throwable) {
-    //         // Several error may come out with file handling or DOM
-    //         e.printStackTrace()
-    //     }
-    //     result.success(null)
-    // }
-
-    private fun takeScreenshotBytes(): String? {
-        try {
-            val bitmap: Bitmap = Bitmap.createBitmap(arSceneView!!.getWidth(), arSceneView!!.getHeight(),
-                    Bitmap.Config.ARGB_8888)
-
-            val baseImg = encodeImage(bitmap)
-
-            return baseImg
-
-        } catch (e: Throwable) {
-            // Several error may come out with file handling or DOM
-            e.printStackTrace()
-        }
-
-        return null
-    }
-
-    fun encodeImage(bitmap: Bitmap): String? {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val b = baos.toByteArray()
-        return Base64.encodeToString(b, Base64.DEFAULT)
-    }
-
-    @Throws(IOException::class)
-    fun saveBitmapToDisk(bitmap: Bitmap):String {
-
-//        val now = LocalDateTime.now()
-//        now.format(DateTimeFormatter.ofPattern("M/d/y H:m:ss"))
-        val now = "rawScreenshot"
-        // android/data/com.hswo.mvc_2021.hswo_mvc_2021_flutter_ar/files/
-        // activity.applicationContext.getFilesDir().toString() //doesnt work!!
-        // Environment.getExternalStorageDirectory()
-        val mPath: String =  Environment.getExternalStorageDirectory().toString() + "/DCIM/" + now + ".jpg"
-        val mediaFile = File(mPath)
-        debugLog(mediaFile.toString())
-        //Log.i("path","fileoutputstream opened")
-        //Log.i("path",mPath)
-        val fileOutputStream = FileOutputStream(mediaFile)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-        fileOutputStream.flush()
-        fileOutputStream.close()
-//        Log.i("path","fileoutputstream closed")
-        return mPath as String
     }
 
     private fun arScenViewInit(call: MethodCall, result: MethodChannel.Result, context: Context) {

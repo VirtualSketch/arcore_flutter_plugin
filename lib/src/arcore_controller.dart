@@ -1,17 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
-import 'package:arcore_flutter_plugin/src/arcore_augmented_image.dart';
-import 'package:arcore_flutter_plugin/src/arcore_rotating_node.dart';
 import 'package:arcore_flutter_plugin/src/utils/vector_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
-
-import 'arcore_android_view.dart';
-import 'arcore_hit_test_result.dart';
-import 'arcore_node.dart';
-import 'arcore_plane.dart';
 
 typedef StringResultHandler = void Function(String text);
 typedef UnsupportedHandler = void Function(String text);
@@ -243,14 +234,6 @@ class ArCoreController {
     return await _channel.invokeMethod('log');
   }
 
-  Future<dynamic> getView() {
-    return _channel.invokeMethod('getView');
-  }
-
-  Future<dynamic> takeScreenshotBytes() {
-    return _channel.invokeMethod('takeScreenshotBytes');
-  }
-
   void dispose() {
     _channel.invokeMethod<void>('dispose');
   }
@@ -269,12 +252,12 @@ class ArCoreController {
     }
   }
 
-  Future<dynamic> snapshot() async {
+  Future<Uint8List> snapshot() async {
 
-    final dynamic path = await _channel.invokeMethod('takeScreenshot');
+    final Uint8List? imageBytes = await _channel.invokeMethod('takeScreenshot');
 
-    if (path != null) {
-      return path;
+    if (imageBytes != null) {
+      return imageBytes;
     }
 
     throw Error();
