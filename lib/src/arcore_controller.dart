@@ -2,7 +2,6 @@ import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:arcore_flutter_plugin/src/utils/vector_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 typedef StringResultHandler = void Function(String text);
 typedef UnsupportedHandler = void Function(String text);
@@ -166,7 +165,7 @@ class ArCoreController {
     return _channel.invokeMethod('addArCoreNodeWithAnchor', params);
   }
 
-  Future<void> removeNode({@required String? nodeName}) {
+  Future<void> removeNode({required String? nodeName}) {
     assert(nodeName != null);
     return _channel.invokeMethod('removeARCoreNode', {'nodeName': nodeName});
   }
@@ -216,14 +215,14 @@ class ArCoreController {
   }
 
   Future<void> loadMultipleAugmentedImage(
-      {@required Map<String, Uint8List>? bytesMap}) {
+      {required Map<String, Uint8List>? bytesMap}) {
     assert(bytesMap != null);
     return _channel.invokeMethod('load_multiple_images_on_db', {
       'bytesMap': bytesMap,
     });
   }
 
-  Future<void> loadAugmentedImagesDatabase({@required Uint8List? bytes}) {
+  Future<void> loadAugmentedImagesDatabase({required Uint8List? bytes}) {
     assert(bytes != null);
     return _channel.invokeMethod('load_augmented_images_database', {
       'bytes': bytes,
@@ -253,7 +252,6 @@ class ArCoreController {
   }
 
   Future<Uint8List> snapshot() async {
-
     final Uint8List? imageBytes = await _channel.invokeMethod('takeScreenshot');
 
     if (imageBytes != null) {
