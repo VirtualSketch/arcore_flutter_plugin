@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:arcore_flutter_plugin/src/utils/vector_utils.dart';
 import 'package:flutter/services.dart';
